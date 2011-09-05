@@ -1,0 +1,196 @@
+<style type="text/css">
+	#content h2{
+		position: relative;
+		margin-right: 0;
+	}
+	.result-table{
+		width: 100%;
+		border-top: 1px solid #eee;
+		border-left: 1px solid #eee;
+	}
+	.result-table TD{
+		border-bottom: 1px solid #eee;
+		border-right: 1px solid #eee;
+		vertical-align: top;
+	}
+
+	.result-table .issue{
+		padding: .5em 1em;
+		margin-bottom: 2px;
+	}
+	.result-table .issue:last-child{
+		margin-bottom: 0;
+	}
+	.result-table P SPAN{
+		display: block;
+		font-size: 11px;
+	}
+
+	.result-table TR.holiday{
+		background: #FFEEEE;
+	}
+	.result-table TR.now{
+		background: #e9eff8;
+		
+	}
+	.result-table TH{
+		text-align: right;
+		vertical-align: top;
+	}
+	.result-table span.date{
+		display: block;
+		padding: .5em 1.5em;
+	}
+	.result-table TR TH{
+		font-size: .875em;
+		width: 10ex;
+		text-align: right;
+		border-bottom: 1px solid #eee;
+		border-right: 1px solid #eee;
+	}
+	.result-table THEAD TH{
+		text-align: center;
+	}
+	.issue{
+		position: relative;
+		border: 1px solid #5c9833;
+		background: #c7eaaf;
+		-moz-border-radius: 5px;
+	}
+	.issue-sub-tasks{
+		position: absolute;
+		left: 100%;
+		width: intrinsic;
+		width: -moz-max-content !important;
+		top: 0;
+		background: #c7eaaf;
+		display: none;
+		z-index: 10;
+	}
+	.result-table TD:nth-last-child(1) .issue-sub-tasks{
+		left: auto;
+		right: 100%;
+	}
+	.result-table TD:nth-last-child(2) .issue-sub-tasks{
+		left: auto;
+		right: 100%;
+	}
+	.result-table TD:nth-last-child(3) .issue-sub-tasks{
+		left: auto;
+		right: 100%;
+	}
+	.issue-sub-tasks .issue{
+		border: 0;
+	}
+	.issue:hover .issue-sub-tasks{
+		display: block;
+	}
+	.issue.closed{
+		background: #EEEEEE;
+	}
+	.issue.closed:hover{
+		background: #EEEEEE;
+	}
+	.issue.onhold,
+	.issue-sub-tasks .issue.closed{
+		text-decoration: line-through;
+	}
+	
+	.issue-sub-tasks A{
+		display: block;
+		margin: -0.5em -1em;
+		padding: .5em 1em;
+	}
+	.controller-dashboard #main{
+		margin: 0;
+	}
+	.controller-dashboard #content{
+		padding: 0;
+	}
+	.result-table THEAD.fixed{
+		display: block;
+		position: fixed;
+		top: 0;
+		left: 0;
+	}
+	.issues-count{
+		position: relative;
+		text-align: center;
+	}
+	.issues-count SPAN{
+		display: block;
+		display: inline-block;
+		background: #FFFFDD;
+		-webkit-border-radius: 20px;
+		-moz-border-radius: 20px;
+		border-radius: 20px;
+		width: 30px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		margin: 20px auto;
+	}
+	.result-table SPAN.online{
+		background: #ffd;
+		padding: 2px;
+		font-size: 9px;
+		display: inline-block;
+	}
+	.issue.status-7{
+		background: #C7EAAF;
+	}
+	
+</style>
+
+<%
+	def getCFfromIssue (issue, id)
+	  cf = issue.custom_field_values.detect{|i| i.custom_field_id == id}
+	  return !cf.nil? ? cf.value : ""
+	end
+%>
+
+<h2>Планирование выполнения задач</h2>
+<table cellspacing="0" cellspacing="0" class="result-table">
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<% @users.each do |user| %>
+				<th><%= user.firstname %> <%= user.lastname %></th>	
+			<% end %>
+		</tr>
+		<tbody>
+			<% now = DateTime.now %>
+			<% (DateTime.now + 7).downto(DateTime.now - 7) do |curDate| %>
+				<% sclass = "" %>
+				<% if curDate.wday == 0 || curDate.wday == 6  %>
+					<% sclass = "holiday" %>
+				<% end %>
+				<% if (curDate.day == now.day && curDate.month == now.month && curDate.year == now.year) %>
+					<% sclass += " now" %>
+				<% end %>
+				<tr class="<%= sclass%>">
+					<th>
+						<span class="date"><%= curDate.day %> <%= @month_names[curDate.month-1] %> <%= curDate.year != now.year ? curDate.year : "" %>, <%= @day_names[curDate.wday] %></span>
+					</th>
+					
+					<% 0.upto(@users.size-1) do |i| %>
+					<td>
+						<% day_issues = @issues.find_all { |elem| curDate.to_date.to_s == elem.due_date.to_s && @users[i].id == elem.assigned_to_id }%>
+						<% day_issues.each do |issue| %>
+
+						<div id="issue-<%= issue.id %>" class="<%= issue.css_classes %>">
+							<p>
+								<%= link_to h(truncate(issue.subject, :length => 60)), :controller => 'issues', :action => 'show', :id => issue %> 
+							</p>
+						</div>
+
+						<% end %>
+					</td>
+					<% end %>
+					
+				</tr>
+			<% end %>
+		</tbody>
+		
+	</thead>
+</table>
