@@ -2,11 +2,10 @@ class DashboardController < ApplicationController
   unloadable
 
   def index
-    user_ids = [20, 98, 79, 124, 111, 120]
-    range = 14 #Разброс в днях
-
-    date_start = (DateTime.now - range/2).to_date.to_s
-    date_end = (DateTime.now + range/2).to_date.to_s
+    user_ids = [20, 98, 79, 124, 111, 120, 11, 6, 8, 119]
+    
+    date_start = (DateTime.now - 14).to_date.to_s
+    date_end = (DateTime.now + 14).to_date.to_s
     @issues = Issue.find(:all, :conditions => ["project_id = 14 and due_date >= '"+date_start+"' and due_date <= '"+date_end+"' and assigned_to_id IN (?)", user_ids])
     
     @issues.map { |item|

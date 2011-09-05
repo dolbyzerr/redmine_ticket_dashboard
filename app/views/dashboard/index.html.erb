@@ -3,10 +3,17 @@
 		position: relative;
 		margin-right: 0;
 	}
-	.result-table{
+	.table-holder{
 		width: 100%;
+		overflow: hidden;
+		overflow-x: scroll;
+	}
+	.result-table{
 		border-top: 1px solid #eee;
 		border-left: 1px solid #eee;
+	}
+	.result-table THEAD TH{
+		width: 5ex;
 	}
 	.result-table TD{
 		border-bottom: 1px solid #eee;
@@ -26,12 +33,16 @@
 		font-size: 11px;
 	}
 
-	.result-table TR.holiday{
+	.result-table TH.holiday,
+	.result-table TD.holiday{
 		background: #FFEEEE;
 	}
-	.result-table TR.now{
+	.result-table TH.now,
+	.result-table TD.now{
 		background: #e9eff8;
-		
+	}
+	.result-table TH.now .date{
+		font-weight: bold;
 	}
 	.result-table TH{
 		text-align: right;
@@ -40,14 +51,15 @@
 	.result-table span.date{
 		display: block;
 		padding: .5em 1.5em;
+		width: 150px;
 	}
-	.result-table TR TH{
+	.result-table THEAD TH{
 		font-size: .875em;
-		width: 10ex;
 		text-align: right;
 		border-bottom: 1px solid #eee;
 		border-right: 1px solid #eee;
 	}
+	.result-table TR.header TH,
 	.result-table THEAD TH{
 		text-align: center;
 	}
@@ -56,34 +68,8 @@
 		border: 1px solid #5c9833;
 		background: #c7eaaf;
 		-moz-border-radius: 5px;
-	}
-	.issue-sub-tasks{
-		position: absolute;
-		left: 100%;
-		width: intrinsic;
-		width: -moz-max-content !important;
-		top: 0;
-		background: #c7eaaf;
-		display: none;
-		z-index: 10;
-	}
-	.result-table TD:nth-last-child(1) .issue-sub-tasks{
-		left: auto;
-		right: 100%;
-	}
-	.result-table TD:nth-last-child(2) .issue-sub-tasks{
-		left: auto;
-		right: 100%;
-	}
-	.result-table TD:nth-last-child(3) .issue-sub-tasks{
-		left: auto;
-		right: 100%;
-	}
-	.issue-sub-tasks .issue{
-		border: 0;
-	}
-	.issue:hover .issue-sub-tasks{
-		display: block;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
 	}
 	.issue.closed{
 		background: #EEEEEE;
@@ -150,7 +136,45 @@
 %>
 
 <h2>Планирование выполнения задач</h2>
+<% now = DateTime.now %>
+<div class="table-holder">
 <table cellspacing="0" cellspacing="0" class="result-table">
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<% (DateTime.now - 14).upto(DateTime.now + 14) do |curDate| %>
+				<% sclass = "" %>
+				<% if curDate.wday == 0 || curDate.wday == 6  %><% sclass = "holiday" %><% end %>
+				<% if (curDate.day == now.day && curDate.month == now.month && curDate.year == now.year) %><% sclass += " now" %><% end %>
+				<th class="<%=sclass%>"><span class="date"><%= curDate.day %> <%= @month_names[curDate.month-1] %> <%= curDate.year != now.year ? curDate.year : "" %> <%= @day_names[curDate.wday] %></span></th>	
+			<% end %>
+		</tr>
+	</thead>
+	<tbody>
+		<% @users.each do |user| %>
+		<tr>
+			<td><%= user.firstname %> <%= user.lastname %></td>
+			<% (DateTime.now - 14).upto(DateTime.now + 14) do |curDate| %>
+				<% sclass = "" %>
+				<% if curDate.wday == 0 || curDate.wday == 6  %><% sclass = "holiday" %><% end %>
+				<% if (curDate.day == now.day && curDate.month == now.month && curDate.year == now.year) %><% sclass += " now" %><% end %>
+				<td class="<%=sclass%>">
+					<% day_issues = @issues.find_all { |elem| curDate.to_date.to_s == elem.due_date.to_s && user.id == elem.assigned_to_id }%>
+					<% day_issues.each do |issue| %>
+					<div id="issue-<%= issue.id %>" class="<%= issue.css_classes %>">
+						<p><%= link_to h(truncate(issue.subject, :length => 60)), :controller => 'issues', :action => 'show', :id => issue %>
+							<span><%= issue.estimated_hours %></span>
+						</p>
+					</div>
+					<% end %>
+				</td>
+			<% end %>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+</div>
+<!-- <table cellspacing="0" cellspacing="0" class="result-table">
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
@@ -158,39 +182,46 @@
 				<th><%= user.firstname %> <%= user.lastname %></th>	
 			<% end %>
 		</tr>
-		<tbody>
-			<% now = DateTime.now %>
-			<% (DateTime.now + 7).downto(DateTime.now - 7) do |curDate| %>
-				<% sclass = "" %>
-				<% if curDate.wday == 0 || curDate.wday == 6  %>
-					<% sclass = "holiday" %>
-				<% end %>
-				<% if (curDate.day == now.day && curDate.month == now.month && curDate.year == now.year) %>
-					<% sclass += " now" %>
-				<% end %>
-				<tr class="<%= sclass%>">
-					<th>
-						<span class="date"><%= curDate.day %> <%= @month_names[curDate.month-1] %> <%= curDate.year != now.year ? curDate.year : "" %>, <%= @day_names[curDate.wday] %></span>
-					</th>
-					
-					<% 0.upto(@users.size-1) do |i| %>
-					<td>
-						<% day_issues = @issues.find_all { |elem| curDate.to_date.to_s == elem.due_date.to_s && @users[i].id == elem.assigned_to_id }%>
-						<% day_issues.each do |issue| %>
-
-						<div id="issue-<%= issue.id %>" class="<%= issue.css_classes %>">
-							<p>
-								<%= link_to h(truncate(issue.subject, :length => 60)), :controller => 'issues', :action => 'show', :id => issue %> 
-							</p>
-						</div>
-
-						<% end %>
-					</td>
+	</thead>
+	<tbody>
+		<% (DateTime.now - 7).upto(DateTime.now + 14) do |curDate| %>
+			<% sclass = "" %>
+			<% if curDate.wday == 0 || curDate.wday == 6  %>
+				<% sclass = "holiday" %>
+			<% end %>
+			<% if curDate.wday == 1 %>
+				<tr class="header">
+					<th>&nbsp;</th>
+					<% @users.each do |user| %>
+						<th><%= user.firstname %> <%= user.lastname %></th>	
 					<% end %>
-					
 				</tr>
 			<% end %>
-		</tbody>
-		
-	</thead>
-</table>
+			<% if (curDate.day == now.day && curDate.month == now.month && curDate.year == now.year) %>
+				<% sclass += " now" %>
+			<% end %>
+			<tr class="<%= sclass%>">
+				<th>
+					<span class="date"><%= curDate.day %> <%= @month_names[curDate.month-1] %> <%= curDate.year != now.year ? curDate.year : "" %>, <%= @day_names[curDate.wday] %></span>
+				</th>
+			
+				<% 0.upto(@users.size-1) do |i| %>
+				<td>
+					<% day_issues = @issues.find_all { |elem| curDate.to_date.to_s == elem.due_date.to_s && @users[i].id == elem.assigned_to_id }%>
+					<% day_issues.each do |issue| %>
+
+					<div id="issue-<%= issue.id %>" class="<%= issue.css_classes %>">
+						<p><%= link_to h(truncate(issue.subject, :length => 60)), :controller => 'issues', :action => 'show', :id => issue %>
+							<span><%= issue.estimated_hours %></span>
+						</p>
+
+					</div>
+
+					<% end %>
+				</td>
+				<% end %>
+			
+			</tr>
+		<% end %>
+	</tbody>
+</table> -->
