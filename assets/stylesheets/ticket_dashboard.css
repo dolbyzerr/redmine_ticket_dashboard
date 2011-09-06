@@ -1,0 +1,236 @@
+#content h2{
+	position: relative;
+	margin-right: 0;
+}
+.table-holder{
+	width: 100%;
+}
+.result-table{
+	border-top: 1px solid #eee;
+	border-left: 1px solid #eee;
+	background: white;
+}
+.result-table TD{
+	border-bottom: 1px solid #eee;
+	border-right: 1px solid #eee;
+	vertical-align: top;
+	padding: 0;
+}
+.result-table .issue{
+	padding: .5em 1em;
+	margin-bottom: 2px;
+}
+.result-table .issue:last-child{
+	margin-bottom: 0;
+}
+.result-table P SPAN{
+	display: block;
+	font-size: 11px;
+}
+.result-table TH.holiday,
+.result-table TD.holiday{
+	background: #FFEEEE;
+}
+.result-table TH.now,
+.result-table TD.now{
+	background: #e9eff8;
+}
+.result-table TH.now .date{
+	font-weight: bold;
+}
+.result-table TH{
+	text-align: right;
+	vertical-align: top;
+}
+.table-holder .table-corner{
+	
+}
+.fht-fixed-column .fht-thead {
+	border-bottom: 1px solid #dadadd;
+	margin-bottom: -1px;
+}
+.table-holder TH,
+.table-holder .th{
+	background: #fafaff;
+	border-bottom: 1px solid #dadadd;
+	border-right: 1px solid #dadadd;
+}
+.table-holder .th .user{
+	display: block;
+	text-align: right;
+	font-weight: bold;
+	padding: .5em;
+}
+.result-table span.date{
+	display: block;
+	width: 150px;
+	font-weight: bold;
+}
+.result-table THEAD TH{
+	font-size: .875em;
+	text-align: right;
+	border-bottom: 1px solid #eee;
+	border-right: 1px solid #eee;
+	padding: 0;
+}
+.result-table TR.header TH,
+.result-table THEAD TH{
+	text-align: center;
+}
+.issue{
+	position: relative;
+	border: 1px solid #5c9833;
+	background: #c7eaaf;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+.issue.closed{
+	background: #EEEEEE;
+}
+.issue.closed:hover{
+	background: #EEEEEE;
+}
+.issue.onhold,
+.issue-sub-tasks .issue.closed{
+	text-decoration: line-through;
+}
+
+.issue-sub-tasks A{
+	display: block;
+	margin: -0.5em -1em;
+	padding: .5em 1em;
+}
+.controller-dashboard #main{
+	margin: 0;
+}
+.controller-dashboard #content{
+	padding: 0;
+}
+.result-table THEAD.fixed{
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+.issues-count{
+	position: relative;
+	text-align: center;
+}
+.issues-count SPAN{
+	display: block;
+	display: inline-block;
+	background: #FFFFDD;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	margin: 20px auto;
+}
+.result-table SPAN.online{
+	background: #ffd;
+	padding: 2px;
+	font-size: 9px;
+	display: inline-block;
+}
+.issue.status-7{
+	background: #C7EAAF;
+}
+
+
+
+/*!
+* jquery.fixedHeaderTable. The jQuery fixedHeaderTable plugin
+*
+* Copyright (c) 2011 Mark Malek
+* http://fixedheadertable.com
+*
+* Licensed under MIT
+* http://www.opensource.org/licenses/mit-license.php
+* 
+* http://docs.jquery.com/Plugins/Authoring
+* jQuery authoring guidelines
+*
+* Launch  : October 2009
+* Version : 1.3
+* Released: May 9th, 2011
+*
+* 
+* all CSS sizing (width,height) is done in pixels (px)
+*/
+
+/* @group Reset */
+
+.fht-table,
+.fht-table thead,
+.fht-table tfoot,
+.fht-table tbody,
+.fht-table tr,
+.fht-table th,
+.fht-table td {
+	/* position */
+    margin: 0;
+    
+    /* size */
+	padding: 0;
+
+	/* text */
+	font-size: 100%;
+	font: inherit;
+	vertical-align: top;
+	}
+
+.fht-table {
+	/* appearance */
+    border-collapse: collapse;
+    border-spacing: 0;
+	}
+
+/* @end */
+
+/* @group Content */
+
+.fht-table-wrapper,
+.fht-table-wrapper .fht-thead,
+.fht-table-wrapper .fht-tfoot,
+.fht-table-wrapper .fht-fixed-column .fht-tbody,
+.fht-table-wrapper .fht-fixed-body .fht-tbody,
+.fht-table-wrapper .fht-tbody {
+	/* appearance */
+	overflow: hidden;
+	
+	/* position */
+	position: relative;
+	}
+
+	.fht-table-wrapper .fht-fixed-body .fht-tbody,
+	.fht-table-wrapper .fht-tbody {
+		/* appearance */
+	    overflow: auto;
+		}
+
+		.fht-table-wrapper .fht-table .fht-cell {
+			/* appearance */
+			overflow: hidden;
+			
+			/* size */
+		    height: 1px;
+			}
+	
+	.fht-table-wrapper .fht-fixed-column,
+	.fht-table-wrapper .fht-fixed-body {
+	    /* position */
+	    top: 0;
+	    left: 0;
+	    position: absolute;
+	    }
+	    
+	.fht-table-wrapper .fht-fixed-column {
+	    /* position */
+	    z-index: 1;
+	    }
+
+/* @end */
