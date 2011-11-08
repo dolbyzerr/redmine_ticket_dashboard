@@ -1,3 +1,6 @@
+html > body #content{
+	min-height: none;
+}
 #content h2{
 	position: relative;
 	margin-right: 0;
@@ -139,6 +142,17 @@
 .issue.status-7{
 	background: #C7EAAF;
 }
+.issue.status-10{
+	background: #EEDDFF;
+}
+.issue.status-6{
+	background: #FF974F;
+}
+
+.issue.status-10 A{
+/*	color: white;*/
+}
+
 
 
 

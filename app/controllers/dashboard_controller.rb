@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   unloadable
 
   def index
-    user_ids = [20, 98, 79, 124, 111, 120, 11, 6, 8, 119]
+    user_ids = [20, 98, 79, 124, 111, 120, 11, 6, 8, 119, 130]
     
     date_start = (DateTime.now - 14).to_date.to_s
     date_end = (DateTime.now + 14).to_date.to_s
