@@ -19,6 +19,10 @@ html > body #content{
 	vertical-align: top;
 	padding: 0;
 }
+.result-table TD.separator{
+	background: #FAFAFF;
+	border-right: 1px solid #FAFAFF;
+}
 .result-table .issue{
 	padding: .5em 1em;
 	margin-bottom: 2px;
@@ -64,6 +68,13 @@ html > body #content{
 	font-weight: bold;
 	padding: .5em;
 }
+.table-holder SPAN.group-name{
+	display: block;
+	text-align: right;
+	font-weight: bold;
+	padding: 5px;
+}
+
 .result-table span.date{
 	display: block;
 	width: 150px;

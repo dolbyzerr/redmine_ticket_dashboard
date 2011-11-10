@@ -2,16 +2,20 @@ class DashboardController < ApplicationController
   unloadable
 
   def index
-    user_ids = [20, 98, 79, 124, 111, 120, 11, 6, 8, 119, 130]
+    #user_ids = [20, 98, 79, 124, 111, 120, 11, 6, 8, 119, 130]
+    dashboard_group_id = 146
+
+    @dashboard_group = Group.find(:all, :conditions=>["id IN (?)", dashboard_group_id]).first
+    
+    user_ids = @dashboard_group.users.map{|user| user.id}
     
     date_start = (DateTime.now - 14).to_date.to_s
     date_end = (DateTime.now + 14).to_date.to_s
     @issues = Issue.find(:all, :conditions => ["project_id = 14 and due_date >= '"+date_start+"' and due_date <= '"+date_end+"' and assigned_to_id IN (?)", user_ids])
     
-    @issues.map { |item|
-      user_ids = user_ids | [item.assigned_to_id]
-    }
-    @users = User.find(:all, :conditions => ["id IN (?)", user_ids])
+    @users = @dashboard_group.users
+    @groups = @users.map{|user| user.groups}.flatten.uniq - [@dashboard_group]
+    
 
     # flash[:notice] = date_start
     # @cat = IssueCustomField.find(:all, :conditions => ["id=7"])[0].possible_values
